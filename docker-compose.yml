@@ -2,9 +2,15 @@ version: "3"
 
 services:
   api:
-    build:
-      context: .
-      dockerfile: ./api/Dockerfile
+    build: ./api
     ports:
       - 8080:8080
+
+  redis:
+    image: redis:5
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
 

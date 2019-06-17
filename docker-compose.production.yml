@@ -8,6 +8,7 @@ services:
                               --processes 4
                               --threads 2
                               --master
-    environment:
-      SERVER_APP_CONFIG: server/config/production.py
+
+  redis:
+    restart: always
 
