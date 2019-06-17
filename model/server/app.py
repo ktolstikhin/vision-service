@@ -48,7 +48,12 @@ def main():
             predictions = []
 
             for _, label, proba in res_list:
-                predictions.append({'label': label, 'proba': float(proba)})
+                pred = {
+                    'label': label,
+                    'proba': float(proba),
+                    'predicted_at': time.strftime('%Y%m%d_%H%M%S')
+                }
+                predictions.append(pred)
 
             redis.set(img_id, json.dumps(predictions))
 
