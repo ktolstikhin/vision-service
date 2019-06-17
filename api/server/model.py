@@ -11,7 +11,7 @@ from redis import StrictRedis
 
 class ModelClient(object):
 
-    IMAGE_QUEUE = 'vision-service-images'
+    IMAGE_QUEUE = 'images'
     FETCH_SLEEP = 0.05
 
     def __init__(self, redis_host, logger=None):
@@ -29,7 +29,7 @@ class ModelClient(object):
         img_b64 = base64.b64encode(data).decode('utf-8')
         img_id = uuid.uuid4().hex
 
-        queue_data = json.dumps({'img_id': img_id, 'img_b64': img_b64})
+        queue_data = json.dumps({'id': img_id, 'b64': img_b64})
         self.redis.rpush(self.IMAGE_QUEUE, queue_data)
 
         t_start = time.time()
