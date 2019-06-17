@@ -1,6 +1,6 @@
 FROM tensorflow/tensorflow:latest-py3
 
-WORKDIR /opt/vision-service/model
+WORKDIR /opt/vision-service/
 
 COPY . .
 
