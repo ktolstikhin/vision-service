@@ -7,8 +7,7 @@ from argparse import ArgumentParser
 
 from redis import StrictRedis
 
-import model
-from utils import base64_decode_image
+from utils import image, predictor
 
 
 REDIS_HOST = 'redis'
@@ -34,15 +33,15 @@ def main():
 
         for img in imgs:
             img = json.loads(img.decode('utf-8'))
-            img_dec = base64_decode_image(img['b64'])
-            img_list.append(img_dec)
+            img_pil = image.base64_decode(img['b64'])
+            img_list.append(img_pil)
             img_ids.append(img['id'])
 
         if not img_ids:
             time.sleep(FETCH_SLEEP)
             continue
 
-        res_lists = model.predict(img_list)
+        res_lists = predictor.predict(img_list)
 
         for img_id, res_list in zip(img_ids, res_lists):
             predictions = []

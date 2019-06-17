@@ -1,6 +1,6 @@
 FROM python:3.5-alpine
 
-WORKDIR /opt/vision-service/
+WORKDIR /opt/vision-service
 
 COPY . .
 

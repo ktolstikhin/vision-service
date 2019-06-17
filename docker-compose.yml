@@ -12,12 +12,12 @@ services:
   model:
     build: ./model
     command: python server/start.py --batch-size 32
+    volumes:
+      - model_data:/opt/vision-service
+    environment:
+      - KERAS_HOME=/opt/vision-service
     depends_on:
       - redis
-    volumes:
-      - model_data:/opt/vision-service/
-    environment:
-      - KERAS_HOME=/opt/vision-service/
 
   redis:
     image: redis:5
