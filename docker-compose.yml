@@ -11,7 +11,7 @@ services:
 
   model:
     build: ./model
-    command: python server/app.py
+    command: python server/app.py --batch-size 32
     depends_on:
       - redis
 
