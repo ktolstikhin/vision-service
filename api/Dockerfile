@@ -4,5 +4,6 @@ WORKDIR /opt/vision-service/
 
 COPY . .
 
+RUN apk add --no-cache build-base linux-headers zlib-dev jpeg-dev
 RUN pip3 --no-cache-dir install -r requirements.txt
 
