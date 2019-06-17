@@ -9,6 +9,9 @@ services:
                               --threads 2
                               --master
 
+  model:
+    restart: always
+
   redis:
     restart: always
 

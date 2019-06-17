@@ -7,6 +7,13 @@ services:
       - 8080:8080
     depends_on:
       - redis
+      - model
+
+  model:
+    build: ./model
+    command: python server/app.py
+    depends_on:
+      - redis
 
   redis:
     image: redis:5

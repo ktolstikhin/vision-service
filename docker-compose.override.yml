@@ -12,3 +12,8 @@ services:
     environment:
       SERVER_APP_CONFIG: server/config/development.py
 
+  model:
+    restart: on-failure
+    volumes:
+      - ./model:/opt/vision-service/model
+
