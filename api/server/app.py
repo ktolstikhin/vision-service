@@ -49,5 +49,7 @@ def not_found(error):
 
 @app.errorhandler(500)
 def server_error(error):
-    return jsonify(success=False, message='oops something went wrong') , 500
+    msg = error.description or 'oops something went wrong'
+
+    return jsonify(success=False, message=msg) , 500
 
