@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  api:
+    restart: always
+    command: >
+      uwsgi --wsgi server.app --http-socket 0.0.0.0:8080
+                              --processes 4
+                              --threads 2
+                              --master
+    environment:
+      SERVER_APP_CONFIG: server/config/production.py
+
