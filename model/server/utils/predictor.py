@@ -25,9 +25,9 @@ def preprocess_images(img_list):
     return preprocess_input(inputs)
 
 
-def predict(img_list):
+def predict(img_list, top=5):
     inputs = preprocess_images(img_list)
     classes = model.predict(inputs)
 
-    return imagenet_utils.decode_predictions(classes)
+    return imagenet_utils.decode_predictions(classes, top)
 

@@ -13,6 +13,7 @@ from utils import image, predictor
 REDIS_HOST = 'redis'
 IMAGE_QUEUE = 'images'
 FETCH_SLEEP = 0.05
+TOP_LABELS = 5
 
 
 def get_args():
@@ -33,15 +34,15 @@ def main():
 
         for img in imgs:
             img = json.loads(img.decode('utf-8'))
-            img_pil = image.base64_decode(img['b64'])
-            img_list.append(img_pil)
+            img_dec = image.base64_decode(img['b64'])
+            img_list.append(img_dec)
             img_ids.append(img['id'])
 
         if not img_ids:
             time.sleep(FETCH_SLEEP)
             continue
 
-        res_lists = predictor.predict(img_list)
+        res_lists = predictor.predict(img_list, TOP_LABELS)
 
         for img_id, res_list in zip(img_ids, res_lists):
             predictions = []
