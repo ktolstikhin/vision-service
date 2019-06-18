@@ -37,6 +37,7 @@ def main():
             img_dec = image.base64_decode(img['b64'])
             img_list.append(img_dec)
             img_ids.append(img['id'])
+            print('received image {}'.format(img['id']))
 
         if not img_ids:
             time.sleep(FETCH_SLEEP)
@@ -45,17 +46,17 @@ def main():
         res_lists = predictor.predict(img_list, TOP_LABELS)
 
         for img_id, res_list in zip(img_ids, res_lists):
-            predictions = []
+            predictions = {
+                'labels': [],
+                'predicted_at': time.strftime('%Y%m%d_%H%M%S')
+            }
 
             for _, label, proba in res_list:
-                pred = {
-                    'label': label,
-                    'proba': float(proba),
-                    'predicted_at': time.strftime('%Y%m%d_%H%M%S')
-                }
-                predictions.append(pred)
+                pred = {'label': label, 'proba': float(proba)}
+                predictions['labels'].append(pred)
 
             redis.set(img_id, json.dumps(predictions))
+            print('store results for image {}'.format(img_id))
 
         redis.ltrim(IMAGE_QUEUE, len(img_ids), -1)
 
