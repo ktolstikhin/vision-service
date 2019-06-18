@@ -19,7 +19,7 @@ def index():
     return jsonify(success=True, message='Send files to /api/predict')
 
 
-@app.route('/api/predict')
+@app.route('/api/predict', methods=['POST'])
 def predict():
     timeout = app.config.get('PREDICTION_TIMEOUT')
 
