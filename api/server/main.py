@@ -10,7 +10,7 @@ app.config.from_object('server.config.default')
 app.config.from_envvar('SERVER_APP_CONFIG', silent=True)
 init_logger(app)
 
-model_client = ModelClient('redis')
+model_client = ModelClient(redis_host='redis')
 
 
 @app.route('/')
@@ -51,7 +51,12 @@ def not_found(error):
     return jsonify(success=False, message=error.description), 404
 
 
+@app.errorhandler(405)
+def not_allowed(error):
+    return jsonify(success=False, message=error.description), 405
+
+
 @app.errorhandler(500)
 def server_error(error):
-    return jsonify(success=False, message=error.description) , 500
+    return jsonify(success=False, message=error.description), 500
 
