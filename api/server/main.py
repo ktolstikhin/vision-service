@@ -10,7 +10,8 @@ app.config.from_object('server.config.default')
 app.config.from_envvar('SERVER_APP_CONFIG', silent=True)
 init_logger(app)
 
-model_client = ModelClient(redis_host='redis')
+redis_host = app.config['REDIS_HOST']
+model_client = ModelClient(redis_host)
 
 
 @app.route('/')
