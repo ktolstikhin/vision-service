@@ -14,7 +14,7 @@ from utils.logger import init_logger
 REDIS_HOST = 'redis'
 IMAGE_QUEUE = 'images'
 FETCH_SLEEP = 0.05
-TOP_LABELS = 5
+TOP_LABEL_NUM = 5
 
 
 def get_args():
@@ -32,6 +32,12 @@ def main():
 
     while True:
         imgs = redis.lrange(IMAGE_QUEUE, 0, args.batch_size - 1)
+
+        if not imgs:
+            time.sleep(FETCH_SLEEP)
+            continue
+
+        redis.ltrim(IMAGE_QUEUE, len(imgs), -1)
         img_ids, img_list = [], []
 
         for img in imgs:
@@ -41,26 +47,20 @@ def main():
             img_ids.append(img['id'])
             logger.info('received image {}'.format(img['id']))
 
-        if not img_ids:
-            time.sleep(FETCH_SLEEP)
-            continue
-
-        res_lists = predictor.predict(img_list, TOP_LABELS)
+        res_lists = predictor.predict(img_list, TOP_LABEL_NUM)
 
         for img_id, res_list in zip(img_ids, res_lists):
-            predictions = {
-                'labels': [],
+            results = {
+                'predictions': [],
                 'predicted_at': time.strftime('%Y%m%d_%H%M%S')
             }
 
             for _, label, proba in res_list:
                 pred = {'label': label, 'proba': float(proba)}
-                predictions['labels'].append(pred)
+                results['predictions'].append(pred)
 
-            redis.set(img_id, json.dumps(predictions))
+            redis.set(img_id, json.dumps(results))
             logger.info('store results for image {}'.format(img_id))
-
-        redis.ltrim(IMAGE_QUEUE, len(img_ids), -1)
 
 
 if __name__ == '__main__':
