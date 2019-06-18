@@ -4,7 +4,7 @@ services:
   api:
     restart: on-failure
     volumes:
-      - ./api/server:/opt/vision-service/api/server
+      - ./api:/opt/vision-service/api
     command: >
       uwsgi --wsgi server.main:app --http-socket 0.0.0.0:8080
                                    --python-autoreload 1
@@ -15,5 +15,5 @@ services:
   model:
     restart: on-failure
     volumes:
-      - ./model/server:/opt/vision-service/model/server
+      - ./model:/opt/vision-service/model
 

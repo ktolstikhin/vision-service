@@ -13,9 +13,9 @@ services:
     build: ./model
     command: python server/run.py --batch-size 32
     volumes:
-      - model_data:/opt/vision-service/model/keras
+      - model_data:/opt/vision-service/.keras
     environment:
-      - KERAS_HOME=/opt/vision-service/model/keras
+      - KERAS_HOME=/opt/vision-service/.keras
     depends_on:
       - redis
 
