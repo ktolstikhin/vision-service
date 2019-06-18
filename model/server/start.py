@@ -8,6 +8,7 @@ from argparse import ArgumentParser
 from redis import StrictRedis
 
 from utils import image, predictor
+from utils.logger import init_logger
 
 
 REDIS_HOST = 'redis'
@@ -26,6 +27,7 @@ def get_args():
 
 def main():
     args = get_args()
+    logger = init_logger()
     redis = StrictRedis(REDIS_HOST)
 
     while True:
@@ -37,7 +39,7 @@ def main():
             img_dec = image.base64_decode(img['b64'])
             img_list.append(img_dec)
             img_ids.append(img['id'])
-            print('received image {}'.format(img['id']))
+            logger.info('received image {}'.format(img['id']))
 
         if not img_ids:
             time.sleep(FETCH_SLEEP)
@@ -56,7 +58,7 @@ def main():
                 predictions['labels'].append(pred)
 
             redis.set(img_id, json.dumps(predictions))
-            print('store results for image {}'.format(img_id))
+            logger.info('store results for image {}'.format(img_id))
 
         redis.ltrim(IMAGE_QUEUE, len(img_ids), -1)
 
