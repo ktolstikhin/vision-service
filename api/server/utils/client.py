@@ -2,7 +2,6 @@ import json
 import time
 import uuid
 import base64
-import logging
 from io import BytesIO
 
 from PIL import Image
@@ -14,18 +13,16 @@ class ModelClient(object):
     IMAGE_QUEUE = 'images'
     FETCH_SLEEP = 0.05
 
-    def __init__(self, redis_host, logger=None):
+    def __init__(self, redis_host):
         self.redis = StrictRedis(redis_host)
-        self.logger = logger or logging.getLogger()
 
     def predict(self, img_file, timeout=None):
-        img_bytes = BytesIO(img_file)
-        img = Image.open(img_bytes)
+        img = Image.open(img_file)
 
-        self.logger.info(
-            'Process image file {n} {s}'.format(n=img.filename, s=img.size))
-
+        img_bytes = BytesIO()
+        img.save(img_bytes, img.format)
         data = img_bytes.getvalue()
+
         img_b64 = base64.b64encode(data).decode('utf-8')
         img_id = uuid.uuid4().hex
 
@@ -47,8 +44,6 @@ class ModelClient(object):
                 raise TimeoutError
 
             time.sleep(self.FETCH_SLEEP)
-
-        self.logger.info('{n} done'.format(n=img.filename))
 
         return predictions
 
