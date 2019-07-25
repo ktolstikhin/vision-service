@@ -3,7 +3,7 @@
 '''
 import time
 import json
-from argparse import ArgumentParser
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 from redis import StrictRedis
 
@@ -13,14 +13,18 @@ from utils.logger import init_logger
 
 REDIS_HOST = 'redis'
 IMAGE_QUEUE = 'images'
-FETCH_SLEEP = 0.05
 TOP_LABEL_NUM = 5
 
 
 def get_args():
-    parser = ArgumentParser(description=__doc__)
-    parser.add_argument('-b', '--batch-size', type=int,
-                        default=32, help='image batch size')
+    parser = ArgumentParser(
+        description=__doc__,
+        formatter_class=ArgumentDefaultsHelpFormatter)
+
+    parser.add_argument('-b', '--batch-size', type=int, default=32,
+                        help='image batch size')
+    parser.add_argument('-s', '--sleep', type=float, default=0.05,
+                        help='sleep secs between batch fetches')
 
     return parser.parse_args()
 
@@ -34,7 +38,7 @@ def main():
         imgs = redis.lrange(IMAGE_QUEUE, 0, args.batch_size - 1)
 
         if not imgs:
-            time.sleep(FETCH_SLEEP)
+            time.sleep(args.sleep)
             continue
 
         redis.ltrim(IMAGE_QUEUE, len(imgs), -1)
