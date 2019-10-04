@@ -1,18 +1,17 @@
 from werkzeug.exceptions import HTTPException
 from flask import Flask, jsonify, abort, request
 
+from .utils import logger
 from .utils.client import ModelClient
-from .utils.logger import init_logger
 
 
 app = Flask(__name__)
 
 app.config.from_object('server.config.default')
 app.config.from_envvar('SERVER_APP_CONFIG', silent=True)
-init_logger(app)
 
-redis_host = app.config['REDIS_HOST']
-model_client = ModelClient(redis_host)
+logger.initialize(app)
+model_client = ModelClient(app.config['REDIS_HOST'])
 
 
 @app.route('/')
@@ -27,9 +26,9 @@ def predict():
 
     try:
         img = request.files['image']
-        app.logger.info('Received image {}'.format(img.filename))
+        app.logger.info(f'Received image {img.filename}')
         predictions = model_client.predict(img.stream, timeout)
-        app.logger.info('Done processing image {}'.format(img.filename))
+        app.logger.info(f'Done processing image {img.filename}')
     except KeyError:
         abort(400, description='No image found.')
     except TimeoutError:
@@ -43,8 +42,7 @@ def predict():
 
 @app.errorhandler(HTTPException)
 def handle_error(err):
-    app.logger.error('{url} {code} {name}'.format(
-                     url=request.url, code=err.code, name=err.name))
+    app.logger.error(f'{request.url} {err.code} {err.name}')
 
     response = {
         'success': False,

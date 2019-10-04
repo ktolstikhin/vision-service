@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:latest-py3
+FROM tensorflow/tensorflow:nightly-py3
 
 WORKDIR /opt/vision-service/model
 

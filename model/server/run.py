@@ -49,7 +49,7 @@ def main():
             img_dec = image.base64_decode(img['b64'])
             img_list.append(img_dec)
             img_ids.append(img['id'])
-            logger.info('received image {}'.format(img['id']))
+            logger.info(f'received image {img["id"]}')
 
         res_lists = predictor.predict(img_list, TOP_LABEL_NUM)
 
@@ -64,7 +64,7 @@ def main():
                 results['predictions'].append(pred)
 
             redis.set(img_id, json.dumps(results))
-            logger.info('store results for image {}'.format(img_id))
+            logger.info(f'store results for image {img_id}')
 
 
 if __name__ == '__main__':

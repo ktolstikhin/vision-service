@@ -6,9 +6,10 @@ services:
     volumes:
       - ./api:/opt/vision-service/api
     command: >
-      uwsgi --wsgi server.main:app --http-socket 0.0.0.0:8080
-                                   --python-autoreload 1
-                                   --master
+      uwsgi --wsgi server.main:app
+            --http-socket 0.0.0.0:8080
+            --python-autoreload 1
+            --master
     environment:
       SERVER_APP_CONFIG: server/config/development.py
 
