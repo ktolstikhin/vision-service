@@ -1,4 +1,5 @@
 DEBUG = False
 TESTING = False
 REDIS_HOST = 'redis'
+PREDICTION_TIMEOUT = 1.0
 

@@ -11,7 +11,7 @@ from redis import StrictRedis
 class ModelClient(object):
 
     IMAGE_QUEUE = 'images'
-    FETCH_SLEEP = 0.05
+    FETCH_SLEEP = 0.01
 
     def __init__(self, redis_host):
         self.redis = StrictRedis(redis_host)
